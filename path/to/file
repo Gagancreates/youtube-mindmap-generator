@@ -1,0 +1,74 @@
+import { GoogleGenerativeAI } from '@google/generative-ai'
+import { YoutubeTranscript } from 'youtube-transcript'
+
+export async function POST(request: Request) {
+  try {
+    // Get YouTube URL from the request
+    const { youtubeUrl } = await request.json()
+    
+    if (!youtubeUrl) {
+      return new Response(JSON.stringify({ error: 'YouTube URL is required' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
+    
+    // Extract video ID from the URL
+    const videoId = extractVideoId(youtubeUrl)
+    if (!videoId) {
+      return new Response(JSON.stringify({ error: 'Invalid YouTube URL' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
+    
+    // Get transcript from YouTube
+    const transcriptResponse = await YoutubeTranscript.fetchTranscript(videoId)
+    const transcript = transcriptResponse.map(item => item.text).join(' ')
+    
+    if (!transcript || transcript.trim() === '') {
+      return new Response(JSON.stringify({ error: 'Could not extract transcript from the video' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
+
+    // Initialize Gemini API
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '')
+    const model = genAI.getGenerativeModel({ model: 'gemini-pro' })
+
+    // Generate markmap from transcript
+    const prompt = `Create a detailed mind map in Markdown format for the following YouTube video transcript. Use proper markdown syntax with # for main topics, ## for subtopics, and so on. The mind map should summarize the key points and concepts from the video in a hierarchical structure.
+
+    Transcript:
+    ${transcript}
+    
+    Format the response as a valid markdown mind map that can be rendered by markmap.`
+
+    const result = await model.generateContent(prompt)
+    const response = await result.response
+    const markmapCode = response.text()
+
+    // Return the markmap code to the frontend
+    return new Response(JSON.stringify({ 
+      markmapCode,
+      transcript
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    })
+  } catch (error) {
+    console.error('Error:', error)
+    return new Response(JSON.stringify({ error: 'Failed to process the request' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+}
+
+// Helper function to extract video ID from YouTube URL
+function extractVideoId(url: string): string | null {
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/
+  const match = url.match(regExp)
+  return (match && match[2].length === 11) ? match[2] : null
+} 
