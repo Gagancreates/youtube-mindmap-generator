@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Markmap } from 'markmap-view';
 import { Transformer } from 'markmap-lib';
@@ -11,7 +11,12 @@ export default function MindmapPage() {
   const markdownContent = searchParams.get('data');
   const svgRef = useRef<SVGSVGElement>(null);
   const markmapRef = useRef<Markmap | null>(null);
+  const [isClient, setIsClient] = useState(false);
   
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   useEffect(() => {
     if (!markdownContent || !svgRef.current) return;
     
@@ -68,6 +73,10 @@ export default function MindmapPage() {
       console.error('Error downloading SVG:', error);
     }
   };
+
+  if (!isClient) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-white">
