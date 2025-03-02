@@ -22,7 +22,7 @@ export function normalizeYoutubeUrl(url: string): string {
       return `https://www.youtube.com/watch?v=${videoId}`;
     }
     return url;
-  } catch (error) {
+  } catch (_) {
     return url;
   }
 }

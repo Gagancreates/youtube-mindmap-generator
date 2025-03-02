@@ -19,7 +19,7 @@ export default function MindmapPage() {
     const { root } = transformer.transform(markdownContent);
     
     markmapRef.current = Markmap.create(svgRef.current, {
-      color: (node) => 'black',
+      color: (_) => 'black',
       paddingX: 16,
       style: (id) => `
         ${id} {

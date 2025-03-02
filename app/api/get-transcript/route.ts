@@ -11,7 +11,11 @@ export async function POST(request: Request) {
     const transcript = await YoutubeTranscript.fetchTranscript(videoId)
     
     return NextResponse.json({ transcript: transcript.map((t: { text: string }) => t.text).join(" ") })
-  } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch transcript" }, { status: 500 })
+  } 
+  // 
+  catch (error: any) {
+    console.error("Error fetching transcript:", error); // Log the error for debugging
+    return NextResponse.json({ error: "Failed to fetch transcript" }, { status: 500 });
   }
+  
 }
