@@ -11,42 +11,50 @@ function MindmapContent() {
   const markdownContent = searchParams.get('data');
   const svgRef = useRef<SVGSVGElement>(null);
   const markmapRef = useRef<Markmap | null>(null);
-  const [isClient, setIsClient] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   
   useEffect(() => {
-    setIsClient(true);
+    setIsMounted(true);
   }, []);
 
   useEffect(() => {
-    if (!markdownContent || !svgRef.current) return;
+    if (!isMounted || !markdownContent || !svgRef.current) return;
     
-    const transformer = new Transformer();
-    const { root } = transformer.transform(markdownContent);
-    
-    markmapRef.current = Markmap.create(svgRef.current, {
-      color: (_) => 'black',
-      paddingX: 16,
-      style: (id) => `
-        ${id} {
-          background-color: white;
-        }
-        ${id} text {
-          fill: #333;
-          font-family: Roboto, sans-serif;
-          font-size: 14px;
-        }
-        ${id} path {
-          stroke: #666;
-        }
-      `
-    }, root);
+    try {
+      const transformer = new Transformer();
+      const { root } = transformer.transform(markdownContent);
+      
+      if (markmapRef.current) {
+        markmapRef.current.destroy();
+      }
+
+      markmapRef.current = Markmap.create(svgRef.current, {
+        color: (_) => 'black',
+        paddingX: 16,
+        style: (id) => `
+          ${id} {
+            background-color: white;
+          }
+          ${id} text {
+            fill: #333;
+            font-family: Roboto, sans-serif;
+            font-size: 14px;
+          }
+          ${id} path {
+            stroke: #666;
+          }
+        `
+      }, root);
+    } catch (error) {
+      console.error('Error creating mindmap:', error);
+    }
 
     return () => {
       if (markmapRef.current) {
         markmapRef.current.destroy();
       }
     };
-  }, [markdownContent]);
+  }, [markdownContent, isMounted]);
 
   const handleDownload = () => {
     const svg = svgRef.current;
@@ -74,7 +82,7 @@ function MindmapContent() {
     }
   };
 
-  if (!isClient) {
+  if (!isMounted) {
     return <div>Loading...</div>;
   }
 
