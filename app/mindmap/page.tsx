@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useEffect, useRef, useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Markmap } from 'markmap-view';
 import { Transformer } from 'markmap-lib';
 
-export default function MindmapPage() {
+function MindmapContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const markdownContent = searchParams.get('data');
@@ -103,5 +103,13 @@ export default function MindmapPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function MindmapPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <MindmapContent />
+    </Suspense>
   );
 } 
