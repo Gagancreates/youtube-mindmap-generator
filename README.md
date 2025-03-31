@@ -3,6 +3,9 @@
 Turn YouTube videos into structured mindmaps in seconds!
 
 This project extracts the transcript from a given YouTube video, summarizes the key points using Gemini AI, and generates an interactive mindmap to visualize the content effectively.
+![Image](https://github.com/user-attachments/assets/816d306a-bb0a-41f2-9a1b-0b7ffa70f042)
+
+![Image](https://github.com/user-attachments/assets/fa6689da-087b-46aa-963d-212066ab10ac)
 
 
 🚀 Features
