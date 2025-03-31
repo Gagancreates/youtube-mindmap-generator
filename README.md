@@ -8,9 +8,9 @@ This project extracts the transcript from a given YouTube video, summarizes the 
 ![Image](https://github.com/user-attachments/assets/fa6689da-087b-46aa-963d-212066ab10ac)
 
 
-🚀 Features
+# Features
 
--🎯 YouTube Video Processing – Enter a YouTube URL and extract its transcript.
+- YouTube Video Processing – Enter a YouTube URL and extract its transcript.
 
 - AI-Powered Summarization – Uses Gemini AI to generate concise summaries.
 
@@ -18,10 +18,10 @@ This project extracts the transcript from a given YouTube video, summarizes the 
 
 - Download Mindmap – Export and save the mindmap as an image.
 
--⚡ Instant Results – No sign-up required, quick processing.
+- Instant Results – No sign-up required, quick processing.
 
 
-🛠 Tech Stack
+# Tech Stack
 
 -Frontend: Next.js, React, Tailwind CSS
 
@@ -32,7 +32,7 @@ This project extracts the transcript from a given YouTube video, summarizes the 
 -Visualization: Markmap
 
 
-📌 Usage
+# Usage
 
 -Paste a YouTube video link in the input field.
 
